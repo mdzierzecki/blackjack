@@ -108,7 +108,7 @@ def new_game():
 mainWindow = tkinter.Tk()
 
 # set up a screen and frames
-mainWindow.title("Czarny Jacek")
+mainWindow.title("Black Jack 1.1")
 mainWindow.geometry("840x450")
 mainWindow.configure(background="green")
 
@@ -138,7 +138,7 @@ dealer_card_frame.grid(row=0, column=1, sticky="ew", rowspan=2)
 # player
 player_score_label = tkinter.IntVar()
 
-tkinter.Label(card_frame, text="player", background="green", fg="white").grid(row=2, column=0)
+tkinter.Label(card_frame, text="Player", background="green", fg="white").grid(row=2, column=0)
 tkinter.Label(card_frame, textvariable=player_score_label, background="green", fg="white").grid(row=3, column=0)
 
 # embedded frame to whole the card images
