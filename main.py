@@ -109,8 +109,12 @@ mainWindow = tkinter.Tk()
 
 # set up a screen and frames
 mainWindow.title("Czarny Jacek")
-mainWindow.geometry("640x480")
+mainWindow.geometry("840x450")
 mainWindow.configure(background="green")
+
+background_image = tkinter.PhotoImage(file='files/background.png')
+background_label = tkinter.Label(mainWindow, image=background_image)
+background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
 
 result_text = tkinter.StringVar()
