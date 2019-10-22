@@ -31,6 +31,7 @@ def deal_card(frame):
     # return card the face value
     return next_card
 
+
 def score_hand(hand):
     # Calcualte the total score of all cards in the list
     # ace is calculate to 11 or 1 - depends on player position
@@ -41,44 +42,67 @@ def score_hand(hand):
         if card_value == 1 and not ace:
             ace = True
             card_value = 11
-        if card_value == 1 and ace:
+        score += card_value
+        # when we bust
+        if score > 21 and ace:
+            score -= 10
             ace = False
-            card_value = 11
-
+    return score
 
 
 def deal_dealer():
-    global dealer_score
-    global dealer_ace
-    card_value = deal_card(dealer_card_frame)[0]
-    if card_value == 1 and not dealer_ace:
-        dealer_ace = True
-        card_value = 11
-    dealer_score += card_value
-    # when we bust
-    if card_value > 21 and dealer_ace:
-        dealer_score -= 10
-        dealer_ace = False
-    dealer_score_label.set(dealer_score)
-    if dealer_score > 21:
-        result_text.set("Przegrales zjebie")
+    dealer_score = score_hand(dealer_hand)
+    player_score = score_hand(player_hand)
+    # the brain of dealer
+    while (0 < dealer_score < 17) or dealer_score < player_score:
+        dealer_hand.append(deal_card(dealer_card_frame))
+        dealer_score = score_hand(dealer_hand)
+        dealer_score_label.set(dealer_score)
+
+    if player_score > 21:
+        result_text.set("Dealer wins")
+    elif dealer_score > 21 or player_score > dealer_score:
+        result_text.set("Player wins")
+    elif dealer_score > player_score:
+        result_text.set("Dealer wins")
+    else:
+        result_text.set("Push")
 
 
 def deal_player():
-    global player_score
-    global player_ace
-    card_value = deal_card(player_card_frame)[0]
-    if card_value == 1 and not player_ace:
-        player_ace = True
-        card_value = 11
-    player_score += card_value
-    # when we bust
-    if card_value > 21 and player_ace:
-        player_score -= 10
-        player_ace = False
+    player_hand.append(deal_card(player_card_frame))
+    player_score = score_hand(player_hand)
     player_score_label.set(player_score)
     if player_score > 21:
-        result_text.set("Krupier cipa przegral")
+        result_text.set("Dealer wins")
+
+
+# function that creates new game
+def new_game():
+    global dealer_card_frame
+    global player_card_frame
+    global dealer_hand
+    global player_hand
+
+    # reset dealer position
+    dealer_card_frame.destroy()
+    dealer_card_frame = tkinter.Frame(card_frame, background="green")
+    dealer_card_frame.grid(row=0, column=1, sticky="ew", rowspan=2)
+
+    # reset player position
+    player_card_frame.destroy()
+    player_card_frame = tkinter.Frame(card_frame, background="green")
+    player_card_frame.grid(row=2, column=1, sticky="ew", rowspan=2)
+
+    result_text.set("")
+
+    # create list to store dealers and players cards
+    dealer_hand = []
+    player_hand = []
+
+    deal_player()
+    dealer_hand.append(deal_card(dealer_card_frame))
+    dealer_score_label.set(score_hand(dealer_hand))
 
 
 mainWindow = tkinter.Tk()
@@ -98,19 +122,17 @@ card_frame.grid(row=1, column=0, sticky='ew', columnspan=3, rowspan=2)
 
 # dealer
 dealer_score_label = tkinter.IntVar()
-dealer_score = 0
-dealer_ace = False
 tkinter.Label(card_frame, text="Dealer", background="green", fg="white").grid(row=0, column=0)
 tkinter.Label(card_frame, textvariable=dealer_score_label, background="green", fg="white").grid(row=1, column=0)
 
-# embedded frame to whole the card images
+
+# # embedded frame to whole the card images
+# def dealer_frame():
 dealer_card_frame = tkinter.Frame(card_frame, background="green")
 dealer_card_frame.grid(row=0, column=1, sticky="ew", rowspan=2)
 
 # player
 player_score_label = tkinter.IntVar()
-player_score = 0
-player_ace = False
 
 tkinter.Label(card_frame, text="player", background="green", fg="white").grid(row=2, column=0)
 tkinter.Label(card_frame, textvariable=player_score_label, background="green", fg="white").grid(row=3, column=0)
@@ -129,17 +151,18 @@ dealer_button.grid(row=0, column=0)
 player_button = tkinter.Button(button_frame, text="Player", command=deal_player)
 player_button.grid(row=0, column=1)
 
+player_button = tkinter.Button(button_frame, text="New game", command=new_game)
+player_button.grid(row=0, column=2)
+
 # load cards
 cards = []
 load_images(cards)
 print(cards)
 
 # create list of cards randomly
-deck = list(cards)
+deck = list(cards) + list(cards) + list(cards)
 random.shuffle(deck)
 
-# create list to store dealers and players cards
-dealer_cards = []
-player_cards = []
+new_game()
 
 mainWindow.mainloop()
