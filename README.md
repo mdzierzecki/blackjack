@@ -8,6 +8,6 @@ Black Jack - a game the object of which is to be dealt cards having a higher cou
 
 Requirements:
 
-Python == 3.6.8                                                                                                            TKinter ==  8.6
+Python == 3.6.8   <br />                                                                                                        TKinter ==  8.6
 
 ![alt text](https://raw.githubusercontent.com/mdzierzecki/blackjack/master/files/demo.png)
